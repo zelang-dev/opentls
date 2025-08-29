@@ -32,19 +32,40 @@ with the path returned by `tls_default_ca_cert_file(3)`. All other behaviors sho
 
 ## INSTALLING
 
-To install from a release tarball, run the following:
+The build system uses **cmake**, that produces **static** libraries by default.
 
- ./configure
- make all
- make install
+**Linux**
 
-To install from a git checkout,
-**autoconf**,
-**automake**
-and
-**libtool**
-are required.
-Run the following before continuing
-with the steps above:
+```shell
+mkdir build
+cd build
+cmake .. -D CMAKE_BUILD_TYPE=Debug/Release -D BUILD_TESTS=ON # use to build files in tests folder
+cmake --build .
+```
 
- autoreconf -fi
+**Windows**
+
+```shell
+mkdir build
+cd build
+cmake .. -D BUILD_EXAMPLES=ON -D BUILD_TESTS=ON # use to build files in tests folder
+cmake --build . --config Debug/Release
+```
+
+**As cmake project dependency**
+
+Add to **CMakeLists.txt**
+
+```c
+find_package(openTLS)
+if(NOT opentls_FOUND)
+    FetchContent_Declare(openTLS
+        URL https://github.com/zelang-dev/main/archive/refs/heads/main.zip
+        URL_MD5 00000000000000000000000000000
+    )
+    FetchContent_MakeAvailable(openTLS)
+endif()
+
+target_include_directories(your_project PUBLIC $<BUILD_INTERFACE:${OPENTLS_INCLUDE_DIR} $<INSTALL_INTERFACE:${OPENTLS_INCLUDE_DIR})
+target_link_libraries(your_project PUBLIC ${OPENTLS_TLS_LIBRARY}) # openTLS::TLS or openTLS
+```
