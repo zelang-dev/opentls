@@ -7,6 +7,10 @@
 
 **libtls** provides an excellent new API, but LibreSSL can be difficult to install on systems which already use OpenSSL. **openTLS** aims to make the **libtls** API more easily and widely available.
 
+## Tutorials
+
+See [Writing TLS secured client and server programs using the libtls API](https://github.com/bob-beck/libtls/blob/master/TUTORIAL.md) and [libtls: Rethinking the TLS/SSL API](https://www.youtube.com/watch?v=Wd_dyRbE4AA).
+
 ## Releases
 
 **openTLS** is based on [LibreSSL-portable](https://www.libressl.org/releases.html) sources. **openTLS** releases track LibreSSL releases, starting with version **3.9.2**.
