@@ -1,6 +1,6 @@
 # Library Functions
 
-## [tls_init, tls_config_new, tls_config_free, tls_config_error](tls_init.html)
+## tls_init, tls_config_new, tls_config_free, tls_config_error
 
 * [initialize TLS client and server API](tls_init.md)
 
