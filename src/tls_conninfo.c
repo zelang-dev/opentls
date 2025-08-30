@@ -1,4 +1,4 @@
-/* $OpenBSD: tls_conninfo.c,v 1.24 2023/11/13 10:51:49 tb Exp $ */
+/* $OpenBSD: tls_conninfo.c,v 1.28 2024/12/10 08:40:30 tb Exp $ */
 /*
  * Copyright (c) 2015 Joel Sing <jsing@openbsd.org>
  * Copyright (c) 2015 Bob Beck <beck@openbsd.org>
@@ -76,7 +76,7 @@ tls_get_peer_cert_hash(struct tls *ctx, char **hash)
 		return (0);
 
 	if (tls_cert_hash(ctx->ssl_peer_cert, hash) == -1) {
-		tls_set_errorx(ctx, "unable to compute peer certificate hash - out of memory");
+		tls_set_errorx(ctx, TLS_ERROR_OUT_OF_MEMORY, "out of memory");
 		*hash = NULL;
 		return -1;
 	}
@@ -116,6 +116,14 @@ tls_get_peer_cert_subject(struct tls *ctx, char **subject)
 }
 
 static int
+tls_get_peer_cert_common_name(struct tls *ctx, char **common_name)
+{
+	if (ctx->ssl_peer_cert == NULL)
+		return (-1);
+	return tls_get_common_name(ctx, ctx->ssl_peer_cert, NULL, common_name);
+}
+
+static int
 tls_get_peer_cert_times(struct tls *ctx, time_t *notbefore,
     time_t *notafter)
 {
@@ -139,7 +147,6 @@ tls_get_peer_cert_times(struct tls *ctx, time_t *notbefore,
 		goto err;
 	if ((*notafter = timegm(&after_tm)) == -1)
 		goto err;
-
 	return (0);
 
  err:
@@ -157,6 +164,9 @@ tls_get_peer_cert_info(struct tls *ctx)
 	if (tls_get_peer_cert_subject(ctx, &ctx->conninfo->subject) == -1)
 		goto err;
 	if (tls_get_peer_cert_issuer(ctx, &ctx->conninfo->issuer) == -1)
+		goto err;
+	if (tls_get_peer_cert_common_name(ctx,
+	    &ctx->conninfo->common_name) == -1)
 		goto err;
 	if (tls_get_peer_cert_times(ctx, &ctx->conninfo->notbefore,
 	    &ctx->conninfo->notafter) == -1)
@@ -245,7 +255,7 @@ tls_conninfo_populate(struct tls *ctx)
 	tls_conninfo_free(ctx->conninfo);
 
 	if ((ctx->conninfo = calloc(1, sizeof(struct tls_conninfo))) == NULL) {
-		tls_set_errorx(ctx, "out of memory");
+		tls_set_errorx(ctx, TLS_ERROR_OUT_OF_MEMORY, "out of memory");
 		goto err;
 	}
 
@@ -298,6 +308,7 @@ tls_conninfo_free(struct tls_conninfo *conninfo)
 	free(conninfo->servername);
 	free(conninfo->version);
 
+	free(conninfo->common_name);
 	free(conninfo->hash);
 	free(conninfo->issuer);
 	free(conninfo->subject);

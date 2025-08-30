@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <!-- This is an automatically generated file.  Do not edit.
-   $OpenBSD: tls_conn_version.3,v 1.10 2019/11/02 13:43:14 jsing Exp $
+   $OpenBSD: tls_conn_version.3,v 1.11 2024/12/10 08:42:12 tb Exp $
   
    Copyright (c) 2015 Bob Beck <beck@openbsd.org>
    Copyright (c) 2016, 2018 Joel Sing <jsing@openbsd.org>
@@ -56,6 +56,7 @@
     <code class="Nm">tls_peer_cert_chain_pem</code>,
     <code class="Nm">tls_peer_cert_issuer</code>,
     <code class="Nm">tls_peer_cert_subject</code>,
+    <code class="Nm">tls_peer_cert_common_name</code>,
     <code class="Nm">tls_peer_cert_hash</code>,
     <code class="Nm">tls_peer_cert_notbefore</code>,
     <code class="Nm">tls_peer_cert_notafter</code> &#x2014;
@@ -111,6 +112,10 @@
     tls *ctx</var>);</p>
 <p class="Pp"><var class="Ft">const char *</var>
   <br/>
+  <code class="Fn">tls_peer_cert_common_name</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
   <code class="Fn">tls_peer_cert_hash</code>(<var class="Fa" style="white-space: nowrap;">struct
     tls *ctx</var>);</p>
 <p class="Pp"><var class="Ft">time_t</var>
@@ -162,7 +167,11 @@
     <var class="Ar">ctx</var>.</p>
 <p class="Pp" id="tls_peer_cert_issuer"><a class="permalink" href="#tls_peer_cert_issuer"><code class="Fn">tls_peer_cert_issuer</code></a>()
     returns a string corresponding to the issuer of the peer certificate from
-    <var class="Ar">ctx</var>.</p>
+    <var class="Ar">ctx</var>.
+    <a class="permalink" href="#tls_peer_cert_common_name"><code class="Fn" id="tls_peer_cert_common_name">tls_peer_cert_common_name</code></a>()
+    returns a string corresponding to the common name of the peer certificate
+    from <var class="Ar">ctx</var> or the empty string if no common name is
+    present.</p>
 <p class="Pp" id="tls_peer_cert_hash"><a class="permalink" href="#tls_peer_cert_hash"><code class="Fn">tls_peer_cert_hash</code></a>()
     returns a string corresponding to a hash of the raw peer certificate from
     <var class="Ar">ctx</var> prefixed by a hash name followed by a colon. The
@@ -219,7 +228,9 @@ printf &quot;SHA256:${h}\n&quot;</pre>
 <p class="Pp"><code class="Fn">tls_conn_session_resumed</code>() appeared in
     <span class="Ux">OpenBSD 6.3</span>.</p>
 <p class="Pp"><code class="Fn">tls_conn_cipher_strength</code>() appeared in
-    <span class="Ux">OpenBSD 6.7</span>.</p>
+    <span class="Ux">OpenBSD 6.7</span>.
+    <code class="Fn">tls_peer_cert_common_name</code>() appeared in
+    <span class="Ux">OpenBSD 7.7</span>.</p>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="AUTHORS"><a class="permalink" href="#AUTHORS">AUTHORS</a></h1>
@@ -232,7 +243,7 @@ printf &quot;SHA256:${h}\n&quot;</pre>
 </div>
 <table class="foot">
   <tr>
-    <td class="foot-date">November 2, 2019</td>
+    <td class="foot-date">December 10, 2024</td>
     <td class="foot-os">Debian</td>
   </tr>
 </table>
