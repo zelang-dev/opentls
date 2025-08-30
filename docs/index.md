@@ -2,7 +2,7 @@
 
 ## [tls_init, tls_config_new, tls_config_free, tls_config_error](tls_init.html)
 
-* initialize TLS client and server API
+* [initialize TLS client and server API](tls_init.md)
 
 ## [tls_accept_socket, tls_accept_fds, tls_accept_cbs](tls_accept_socket.html)
 
