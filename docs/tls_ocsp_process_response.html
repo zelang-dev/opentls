@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<!-- This is an automatically generated file.  Do not edit.
+   $OpenBSD: tls_ocsp_process_response.3,v 1.6 2018/07/24 02:01:34 tb Exp $
+  
+   Copyright (c) 2016 Bob Beck <beck@openbsd.org>
+  
+   Permission to use, copy, modify, and distribute this software for any
+   purpose with or without fee is hereby granted, provided that the above
+   copyright notice and this permission notice appear in all copies.
+  
+   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+   WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+   MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+   ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+   WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+   ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+   OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   -->
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    .Nd, .Bf, .Op { display: inline; }
+    .Pa, .Ad { font-style: italic; }
+    .Ms { font-weight: bold; }
+    .Bl-diag > dt { font-weight: bold; }
+    code.Nm, .Fl, .Cm, .Ic, code.In, .Fd, .Fn, .Cd { font-weight: bold;
+      font-family: inherit; }
+  </style>
+  <title>TLS_OCSP_PROCESS_RESPONSE(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">TLS_OCSP_PROCESS_RESPONSE(3)</td>
+    <td class="head-vol">Library Functions Manual</td>
+    <td class="head-rtitle">TLS_OCSP_PROCESS_RESPONSE(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<section class="Sh">
+<h1 class="Sh" id="NAME"><a class="permalink" href="#NAME">NAME</a></h1>
+<p class="Pp"><code class="Nm">tls_ocsp_process_response</code>,
+    <code class="Nm">tls_peer_ocsp_url</code>,
+    <code class="Nm">tls_peer_ocsp_response_status</code>,
+    <code class="Nm">tls_peer_ocsp_cert_status</code>,
+    <code class="Nm">tls_peer_ocsp_crl_reason</code>,
+    <code class="Nm">tls_peer_ocsp_result</code>,
+    <code class="Nm">tls_peer_ocsp_revocation_time</code>,
+    <code class="Nm">tls_peer_ocsp_this_update</code>,
+    <code class="Nm">tls_peer_ocsp_next_update</code> &#x2014;
+    <span class="Nd">inspect an OCSP response</span></p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="SYNOPSIS"><a class="permalink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<p class="Pp"><code class="In">#include
+  &lt;<a class="In">tls.h</a>&gt;</code></p>
+<p class="Pp"><var class="Ft">int</var>
+  <br/>
+  <code class="Fn">tls_ocsp_process_response</code>(<var class="Fa">struct tls
+    *ctx</var>, <var class="Fa">const unsigned char *response</var>,
+    <var class="Fa">size_t size</var>);</p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
+  <code class="Fn">tls_peer_ocsp_url</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">int</var>
+  <br/>
+  <code class="Fn">tls_peer_ocsp_response_status</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">int</var>
+  <br/>
+  <code class="Fn">tls_peer_ocsp_cert_status</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">int</var>
+  <br/>
+  <code class="Fn">tls_peer_ocsp_crl_reason</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
+  <code class="Fn">tls_peer_ocsp_result</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">time_t</var>
+  <br/>
+  <code class="Fn">tls_peer_ocsp_revocation_time</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">time_t</var>
+  <br/>
+  <code class="Fn">tls_peer_ocsp_this_update</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">time_t</var>
+  <br/>
+  <code class="Fn">tls_peer_ocsp_next_update</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="DESCRIPTION"><a class="permalink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+<p class="Pp"><a class="permalink" href="#tls_ocsp_process_response"><code class="Fn" id="tls_ocsp_process_response">tls_ocsp_process_response</code></a>()
+    processes a raw OCSP response in <var class="Ar">response</var> of size
+    <var class="Ar">size</var> to check the revocation status of the peer
+    certificate from <var class="Ar">ctx</var>. A successful return code of 0
+    indicates that the certificate has not been revoked.</p>
+<p class="Pp" id="tls_peer_ocsp_url"><a class="permalink" href="#tls_peer_ocsp_url"><code class="Fn">tls_peer_ocsp_url</code></a>()
+    returns the URL for OCSP validation of the peer certificate from
+    <var class="Ar">ctx</var>.</p>
+<p class="Pp" id="tls_ocsp_process_response~2">The following functions return
+    information about the peer certificate from <var class="Ar">ctx</var> that
+    was obtained by validating a stapled OCSP response during the handshake, or
+    via a previous call to
+    <a class="permalink" href="#tls_ocsp_process_response~2"><code class="Fn">tls_ocsp_process_response</code></a>().</p>
+<p class="Pp" id="tls_peer_ocsp_response_status"><a class="permalink" href="#tls_peer_ocsp_response_status"><code class="Fn">tls_peer_ocsp_response_status</code></a>()
+    returns the OCSP response status as per RFC 6960 section 2.3.</p>
+<p class="Pp" id="tls_peer_ocsp_cert_status"><a class="permalink" href="#tls_peer_ocsp_cert_status"><code class="Fn">tls_peer_ocsp_cert_status</code></a>()
+    returns the OCSP certificate status code as per RFC 6960 section 2.2.</p>
+<p class="Pp" id="tls_peer_ocsp_crl_reason"><a class="permalink" href="#tls_peer_ocsp_crl_reason"><code class="Fn">tls_peer_ocsp_crl_reason</code></a>()
+    returns the OCSP certificate revocation reason status code as per RFC 5280
+    section 5.3.1.</p>
+<p class="Pp" id="tls_peer_ocsp_result"><a class="permalink" href="#tls_peer_ocsp_result"><code class="Fn">tls_peer_ocsp_result</code></a>()
+    returns a textual representation of the OCSP status code returned by one of
+    the previous three functions. If the OCSP response was valid and the
+    certificate was not revoked, the string indicates the OCSP certificate
+    status. Otherwise, the string indicates the OCSP certificate revocation
+    reason or the OCSP error.</p>
+<p class="Pp" id="tls_peer_ocsp_revocation_time"><a class="permalink" href="#tls_peer_ocsp_revocation_time"><code class="Fn">tls_peer_ocsp_revocation_time</code></a>()
+    returns the OCSP revocation time.</p>
+<p class="Pp" id="tls_peer_ocsp_this_update"><a class="permalink" href="#tls_peer_ocsp_this_update"><code class="Fn">tls_peer_ocsp_this_update</code></a>()
+    returns the OCSP this update time.</p>
+<p class="Pp" id="tls_peer_ocsp_next_update"><a class="permalink" href="#tls_peer_ocsp_next_update"><code class="Fn">tls_peer_ocsp_next_update</code></a>()
+    returns the OCSP next update time.</p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="RETURN_VALUES"><a class="permalink" href="#RETURN_VALUES">RETURN
+  VALUES</a></h1>
+<p class="Pp"><code class="Fn">tls_ocsp_process_response</code>() returns 0 on
+    success or -1 on error.</p>
+<p class="Pp"><code class="Fn">tls_peer_ocsp_url</code>() and
+    <code class="Fn">tls_peer_ocsp_result</code>() return
+    <code class="Dv">NULL</code> on error or an out of memory condition.</p>
+<p class="Pp">The <code class="Fn">tls_peer_ocsp_response_status</code>()
+    function returns one of
+    <code class="Dv">TLS_OCSP_RESPONSE_SUCCESSFUL</code>,
+    <code class="Dv">TLS_OCSP_RESPONSE_MALFORMED</code>,
+    <code class="Dv">TLS_OCSP_RESPONSE_INTERNALERROR</code>,
+    <code class="Dv">TLS_OCSP_RESPONSE_TRYLATER</code>,
+    <code class="Dv">TLS_OCSP_RESPONSE_SIGREQUIRED</code>, or
+    <code class="Dv">TLS_OCSP_RESPONSE_UNAUTHORIZED</code> on success or -1 on
+    error.</p>
+<p class="Pp">The <code class="Fn">tls_peer_ocsp_cert_status</code>() function
+    returns one of <code class="Dv">TLS_OCSP_CERT_GOOD</code>,
+    <code class="Dv">TLS_OCSP_CERT_REVOKED</code>, or
+    <code class="Dv">TLS_OCSP_CERT_UNKNOWN</code> on success, and -1 on
+  error.</p>
+<p class="Pp">The <code class="Fn">tls_peer_ocsp_crl_reason</code>() function
+    returns one of <code class="Dv">TLS_CRL_REASON_UNSPECIFIED</code>,
+    <code class="Dv">TLS_CRL_REASON_KEY_COMPROMISE</code>,
+    <code class="Dv">TLS_CRL_REASON_CA_COMPROMISE</code>,
+    <code class="Dv">TLS_CRL_REASON_AFFILIATION_CHANGED</code>,
+    <code class="Dv">TLS_CRL_REASON_SUPERSEDED</code>,
+    <code class="Dv">TLS_CRL_REASON_CESSATION_OF_OPERATION</code>,
+    <code class="Dv">TLS_CRL_REASON_CERTIFICATE_HOLD</code>,
+    <code class="Dv">TLS_CRL_REASON_REMOVE_FROM_CRL</code>,
+    <code class="Dv">TLS_CRL_REASON_PRIVILEGE_WITHDRAWN</code>, or
+    <code class="Dv">TLS_CRL_REASON_AA_COMPROMISE</code> on success or -1 on
+    error.</p>
+<p class="Pp"><code class="Fn">tls_peer_ocsp_revocation_time</code>(),
+    <code class="Fn">tls_peer_ocsp_this_update</code>(), and
+    <code class="Fn">tls_peer_ocsp_next_update</code>() return a time in
+    epoch-seconds on success or -1 on error.</p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="SEE_ALSO"><a class="permalink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<p class="Pp"><a class="Xr">tls_client(3)</a>,
+    <a class="Xr">tls_config_ocsp_require_stapling(3)</a>,
+    <a class="Xr">tls_conn_version(3)</a>, <a class="Xr">tls_connect(3)</a>,
+    <a class="Xr">tls_handshake(3)</a>, <a class="Xr">tls_init(3)</a></p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="HISTORY"><a class="permalink" href="#HISTORY">HISTORY</a></h1>
+<p class="Pp">These functions appeared in <span class="Ux">OpenBSD
+  6.1</span>.</p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="AUTHORS"><a class="permalink" href="#AUTHORS">AUTHORS</a></h1>
+<p class="Pp"><span class="An">Bob Beck</span>
+    &lt;<a class="Mt" href="mailto:beck@openbsd.org">beck@openbsd.org</a>&gt;
+  <br/>
+  <span class="An">Marko Kreen</span>
+    &lt;<a class="Mt" href="mailto:markokr@gmail.com">markokr@gmail.com</a>&gt;</p>
+</section>
+</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">July 24, 2018</td>
+    <td class="foot-os">Debian</td>
+  </tr>
+</table>
+</body>
+</html>

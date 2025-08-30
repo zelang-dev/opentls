@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<!-- This is an automatically generated file.  Do not edit.
+   $OpenBSD: tls_conn_version.3,v 1.10 2019/11/02 13:43:14 jsing Exp $
+  
+   Copyright (c) 2015 Bob Beck <beck@openbsd.org>
+   Copyright (c) 2016, 2018 Joel Sing <jsing@openbsd.org>
+  
+   Permission to use, copy, modify, and distribute this software for any
+   purpose with or without fee is hereby granted, provided that the above
+   copyright notice and this permission notice appear in all copies.
+  
+   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+   WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+   MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+   ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+   WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+   ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+   OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   -->
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    table.head, table.foot { width: 100%; }
+    td.head-rtitle, td.foot-os { text-align: right; }
+    td.head-vol { text-align: center; }
+    .Nd, .Bf, .Op { display: inline; }
+    .Pa, .Ad { font-style: italic; }
+    .Ms { font-weight: bold; }
+    .Bl-diag > dt { font-weight: bold; }
+    code.Nm, .Fl, .Cm, .Ic, code.In, .Fd, .Fn, .Cd { font-weight: bold;
+      font-family: inherit; }
+  </style>
+  <title>TLS_CONN_VERSION(3)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">TLS_CONN_VERSION(3)</td>
+    <td class="head-vol">Library Functions Manual</td>
+    <td class="head-rtitle">TLS_CONN_VERSION(3)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<section class="Sh">
+<h1 class="Sh" id="NAME"><a class="permalink" href="#NAME">NAME</a></h1>
+<p class="Pp"><code class="Nm">tls_conn_version</code>,
+    <code class="Nm">tls_conn_cipher</code>,
+    <code class="Nm">tls_conn_cipher_strength</code>,
+    <code class="Nm">tls_conn_alpn_selected</code>,
+    <code class="Nm">tls_conn_servername</code>,
+    <code class="Nm">tls_conn_session_resumed</code>,
+    <code class="Nm">tls_peer_cert_provided</code>,
+    <code class="Nm">tls_peer_cert_contains_name</code>,
+    <code class="Nm">tls_peer_cert_chain_pem</code>,
+    <code class="Nm">tls_peer_cert_issuer</code>,
+    <code class="Nm">tls_peer_cert_subject</code>,
+    <code class="Nm">tls_peer_cert_hash</code>,
+    <code class="Nm">tls_peer_cert_notbefore</code>,
+    <code class="Nm">tls_peer_cert_notafter</code> &#x2014;
+    <span class="Nd">inspect an established TLS connection</span></p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="SYNOPSIS"><a class="permalink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<p class="Pp"><code class="In">#include
+  &lt;<a class="In">tls.h</a>&gt;</code></p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
+  <code class="Fn">tls_conn_version</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
+  <code class="Fn">tls_conn_cipher</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">int</var>
+  <br/>
+  <code class="Fn">tls_conn_cipher_strength</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
+  <code class="Fn">tls_conn_alpn_selected</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
+  <code class="Fn">tls_conn_servername</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">int</var>
+  <br/>
+  <code class="Fn">tls_conn_session_resumed</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">int</var>
+  <br/>
+  <code class="Fn">tls_peer_cert_provided</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">int</var>
+  <br/>
+  <code class="Fn">tls_peer_cert_contains_name</code>(<var class="Fa">struct tls
+    *ctx</var>, <var class="Fa">const char *name</var>);</p>
+<p class="Pp"><var class="Ft">const uint8_t *</var>
+  <br/>
+  <code class="Fn">tls_peer_cert_chain_pem</code>(<var class="Fa">struct tls
+    *ctx</var>, <var class="Fa">size_t *size</var>);</p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
+  <code class="Fn">tls_peer_cert_issuer</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
+  <code class="Fn">tls_peer_cert_subject</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">const char *</var>
+  <br/>
+  <code class="Fn">tls_peer_cert_hash</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">time_t</var>
+  <br/>
+  <code class="Fn">tls_peer_cert_notbefore</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+<p class="Pp"><var class="Ft">time_t</var>
+  <br/>
+  <code class="Fn">tls_peer_cert_notafter</code>(<var class="Fa" style="white-space: nowrap;">struct
+    tls *ctx</var>);</p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="DESCRIPTION"><a class="permalink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+<p class="Pp">These functions return information about a TLS connection and will
+    only succeed after the handshake is complete (the connection information
+    applies to both clients and servers, unless noted otherwise):</p>
+<p class="Pp" id="tls_conn_version"><a class="permalink" href="#tls_conn_version"><code class="Fn">tls_conn_version</code></a>()
+    returns a string corresponding to a TLS version negotiated with the peer
+    connected to <var class="Ar">ctx</var>.</p>
+<p class="Pp" id="tls_conn_cipher"><a class="permalink" href="#tls_conn_cipher"><code class="Fn">tls_conn_cipher</code></a>()
+    returns a string corresponding to the cipher suite negotiated with the peer
+    connected to <var class="Ar">ctx</var>.</p>
+<p class="Pp" id="tls_conn_cipher_strength"><a class="permalink" href="#tls_conn_cipher_strength"><code class="Fn">tls_conn_cipher_strength</code></a>()
+    returns the strength in bits for the symmetric cipher that is being used
+    with the peer connected to <var class="Ar">ctx</var>.</p>
+<p class="Pp" id="tls_conn_alpn_selected"><a class="permalink" href="#tls_conn_alpn_selected"><code class="Fn">tls_conn_alpn_selected</code></a>()
+    returns a string that specifies the ALPN protocol selected for use with the
+    peer connected to <var class="Ar">ctx</var>. If no protocol was selected
+    then NULL is returned.</p>
+<p class="Pp" id="tls_conn_servername"><a class="permalink" href="#tls_conn_servername"><code class="Fn">tls_conn_servername</code></a>()
+    returns a string corresponding to the servername that the client connected
+    to <var class="Ar">ctx</var> requested by sending a TLS Server Name
+    Indication extension (server only).</p>
+<p class="Pp" id="tls_conn_session_resumed"><a class="permalink" href="#tls_conn_session_resumed"><code class="Fn">tls_conn_session_resumed</code></a>()
+    indicates whether a TLS session has been resumed during the handshake with
+    the server connected to <var class="Ar">ctx</var> (client only).</p>
+<p class="Pp" id="tls_peer_cert_provided"><a class="permalink" href="#tls_peer_cert_provided"><code class="Fn">tls_peer_cert_provided</code></a>()
+    checks if the peer of <var class="Ar">ctx</var> has provided a
+  certificate.</p>
+<p class="Pp" id="tls_peer_cert_contains_name"><a class="permalink" href="#tls_peer_cert_contains_name"><code class="Fn">tls_peer_cert_contains_name</code></a>()
+    checks if the peer of a TLS <var class="Ar">ctx</var> has provided a
+    certificate that contains a SAN or CN that matches
+    <var class="Ar">name</var>.</p>
+<p class="Pp" id="tls_peer_cert_chain_pem"><a class="permalink" href="#tls_peer_cert_chain_pem"><code class="Fn">tls_peer_cert_chain_pem</code></a>()
+    returns a pointer to memory containing a PEM-encoded certificate chain for
+    the peer certificate from <var class="Ar">ctx</var>.</p>
+<p class="Pp" id="tls_peer_cert_subject"><a class="permalink" href="#tls_peer_cert_subject"><code class="Fn">tls_peer_cert_subject</code></a>()
+    returns a string corresponding to the subject of the peer certificate from
+    <var class="Ar">ctx</var>.</p>
+<p class="Pp" id="tls_peer_cert_issuer"><a class="permalink" href="#tls_peer_cert_issuer"><code class="Fn">tls_peer_cert_issuer</code></a>()
+    returns a string corresponding to the issuer of the peer certificate from
+    <var class="Ar">ctx</var>.</p>
+<p class="Pp" id="tls_peer_cert_hash"><a class="permalink" href="#tls_peer_cert_hash"><code class="Fn">tls_peer_cert_hash</code></a>()
+    returns a string corresponding to a hash of the raw peer certificate from
+    <var class="Ar">ctx</var> prefixed by a hash name followed by a colon. The
+    hash currently used is SHA256, though this could change in the future. The
+    hash string for a certificate in file <var class="Ar">mycert.crt</var> can
+    be generated using the commands:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>h=$(openssl x509 -outform der -in mycert.crt | sha256)
+printf &quot;SHA256:${h}\n&quot;</pre>
+</div>
+<p class="Pp" id="tls_peer_cert_notbefore"><a class="permalink" href="#tls_peer_cert_notbefore"><code class="Fn">tls_peer_cert_notbefore</code></a>()
+    returns the time corresponding to the start of the validity period of the
+    peer certificate from <var class="Ar">ctx</var>.</p>
+<p class="Pp" id="tls_peer_cert_notafter"><a class="permalink" href="#tls_peer_cert_notafter"><code class="Fn">tls_peer_cert_notafter</code></a>()
+    returns the time corresponding to the end of the validity period of the peer
+    certificate from <var class="Ar">ctx</var>.</p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="RETURN_VALUES"><a class="permalink" href="#RETURN_VALUES">RETURN
+  VALUES</a></h1>
+<p class="Pp">The <code class="Fn">tls_conn_session_resumed</code>() function
+    returns 1 if a TLS session was resumed or 0 if it was not.</p>
+<p class="Pp">The <code class="Fn">tls_peer_cert_provided</code>() and
+    <code class="Fn">tls_peer_cert_contains_name</code>() functions return 1 if
+    the check succeeds or 0 if it does not.</p>
+<p class="Pp"><code class="Fn">tls_peer_cert_notbefore</code>() and
+    <code class="Fn">tls_peer_cert_notafter</code>() return a time in
+    epoch-seconds on success or -1 on error.</p>
+<p class="Pp">The functions that return a pointer return
+    <code class="Dv">NULL</code> on error or an out of memory condition.</p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="SEE_ALSO"><a class="permalink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<p class="Pp"><a class="Xr">tls_configure(3)</a>,
+    <a class="Xr">tls_handshake(3)</a>, <a class="Xr">tls_init(3)</a>,
+    <a class="Xr">tls_ocsp_process_response(3)</a></p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="HISTORY"><a class="permalink" href="#HISTORY">HISTORY</a></h1>
+<p class="Pp"><code class="Fn">tls_conn_version</code>(),
+    <code class="Fn">tls_conn_cipher</code>(),
+    <code class="Fn">tls_peer_cert_provided</code>(),
+    <code class="Fn">tls_peer_cert_contains_name</code>(),
+    <code class="Fn">tls_peer_cert_issuer</code>(),
+    <code class="Fn">tls_peer_cert_subject</code>(),
+    <code class="Fn">tls_peer_cert_hash</code>(),
+    <code class="Fn">tls_peer_cert_notbefore</code>(), and
+    <code class="Fn">tls_peer_cert_notafter</code>() appeared in
+    <span class="Ux">OpenBSD 5.9</span>.</p>
+<p class="Pp"><code class="Fn">tls_conn_servername</code>() and
+    <code class="Fn">tls_conn_alpn_selected</code>() appeared in
+    <span class="Ux">OpenBSD 6.1</span>.</p>
+<p class="Pp"><code class="Fn">tls_conn_session_resumed</code>() appeared in
+    <span class="Ux">OpenBSD 6.3</span>.</p>
+<p class="Pp"><code class="Fn">tls_conn_cipher_strength</code>() appeared in
+    <span class="Ux">OpenBSD 6.7</span>.</p>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="AUTHORS"><a class="permalink" href="#AUTHORS">AUTHORS</a></h1>
+<p class="Pp"><span class="An">Bob Beck</span>
+    &lt;<a class="Mt" href="mailto:beck@openbsd.org">beck@openbsd.org</a>&gt;
+  <br/>
+  <span class="An">Joel Sing</span>
+    &lt;<a class="Mt" href="mailto:jsing@openbsd.org">jsing@openbsd.org</a>&gt;</p>
+</section>
+</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">November 2, 2019</td>
+    <td class="foot-os">Debian</td>
+  </tr>
+</table>
+</body>
+</html>
