@@ -444,7 +444,7 @@ set(
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_bio_cb.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_client.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_config.c
-	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_conninfo.c
+	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_conninfo_ex.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_keypair.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_server.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_signer.c
