@@ -3,11 +3,10 @@ description: A new TLS library, designed to make it easier to write foolproof ap
 remote_theme: carlosperate/jekyll-theme-rtd
 
 # Theme settings:
-site_author: Lawrence Stubbs
 repo_url: "https://github.com/zelang-dev/openTLS"
 edit_on_github: true
 github_docs_folder: true
 sticky_navigation: true
 prev_next_buttons_location: bottom
 search_enabled: true
-hljs_style: hybrid
+hljs_style: github-gist
