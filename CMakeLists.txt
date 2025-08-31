@@ -12,6 +12,9 @@ include(CheckSymbolExists)
 include(CheckLibraryExists)
 include(CheckIncludeFiles)
 include(CheckTypeSize)
+include(CMakePackageConfigHelpers)
+include(CMakeDependentOption)
+include(CTest)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" ${CMAKE_MODULE_PATH})
 include(cmake_export_symbol)
@@ -22,6 +25,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BUILD_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/built")
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE true)
+
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+    CACHE PATH "Location of header files" )
+
+set(SYSCONFIG_INSTALL_DIR ${CMAKE_INSTALL_SYSCONFDIR}/${PROJECT_NAME}
+    CACHE PATH "Location of configuration files" )
 
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/src/VERSION TLS_VERSION)
 string(STRIP ${TLS_VERSION} TLS_VERSION)

@@ -56,14 +56,6 @@ Set OPENTLS_ROOT_DIR to the root directory of an openTLS installation.
 
 ]=======================================================================]
 
-include (FindPackageHandleStandardArgs)
-
-# Find Include Path
-find_path(opentls_INCLUDE_DIR
-    NAMES tls.h
-)
-mark_as_advanced(opentls_INCLUDE_DIR)
-
 # Find TLS Library
 find_library(opentls_TLS_LIBRARY
     NAMES
@@ -75,6 +67,14 @@ find_library(opentls_TLS_LIBRARY
 )
 mark_as_advanced(opentls_TLS_LIBRARY)
 
+# Find Include Path
+find_path(opentls_INCLUDE_DIR
+    NAMES tls.h
+)
+set(OPENTLS_INCLUDE_DIR ${INCLUDE_INSTALL_DIR})
+mark_as_advanced(opentls_INCLUDE_DIR)
+
+include (FindPackageHandleStandardArgs)
 # Set Find Package Arguments
 find_package_handle_standard_args(opentls
     FOUND_VAR opentls_FOUND
