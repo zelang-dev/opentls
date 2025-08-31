@@ -42,11 +42,11 @@ This module will set the following variables in your project:
     System has the openTLS library. If no components are requested it only requires the crypto library.
 ``OPENTLS_INCLUDE_DIR``
     The openTLS include directory.
-``OPENTLS_TLS_LIBRARY``
+``OPENTLS_LIBRARY``
     The openTLS TLS library.
 ``OPENTLS_LIBRARIES``
     All openTLS libraries.
-OPENTLS_VERSION
+``OPENTLS_VERSION``
     This is set to $major.$minor.$revision (e.g. 2.6.8).
 
 Hints
@@ -57,7 +57,7 @@ Set OPENTLS_ROOT_DIR to the root directory of an openTLS installation.
 ]=======================================================================]
 
 # Find TLS Library
-find_library(opentls_TLS_LIBRARY
+find_library(opentls_LIBRARY
     NAMES
         libtls
         openTLS
@@ -65,20 +65,20 @@ find_library(opentls_TLS_LIBRARY
         libretls
         tls
 )
-mark_as_advanced(opentls_TLS_LIBRARY)
+mark_as_advanced(opentls_LIBRARY)
 
 # Find Include Path
 find_path(opentls_INCLUDE_DIR
     NAMES tls.h
 )
-set(OPENTLS_INCLUDE_DIR ${INCLUDE_INSTALL_DIR})
 mark_as_advanced(opentls_INCLUDE_DIR)
+set(OPENTLS_INCLUDE_DIR ${INCLUDE_INSTALL_DIR})
 
 include (FindPackageHandleStandardArgs)
 # Set Find Package Arguments
 find_package_handle_standard_args(opentls
     FOUND_VAR opentls_FOUND
-    REQUIRED_VARS OPENTLS_TLS_LIBRARY OPENTLS_INCLUDE_DIR
+    REQUIRED_VARS OPENTLS_LIBRARY OPENTLS_INCLUDE_DIR
     VERSION_VAR OPENTLS_VERSION
     HANDLE_COMPONENTS
         FAIL_MESSAGE
@@ -86,20 +86,19 @@ find_package_handle_standard_args(opentls
 )
 
 set(OPENTLS_FOUND ${opentls_FOUND})
+set(OPENSSL_LIBRARIES ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY})
 
 # openTLS Found
 if(OPENTLS_FOUND)
 	set(OPENTLS_INCLUDE_DIRS ${OPENTLS_INCLUDE_DIR})
-	set(OPENTLS_TLS_LIBRARIES ${OPENTLS_TLS_LIBRARY})
-    # Set openTLS::TLS
-    if(NOT TARGET openTLS::TLS AND EXISTS "${OPENTLS_TLS_LIBRARY}")
-        add_library(openTLS::TLS UNKNOWN IMPORTED)
-        set_target_properties(
-            openTLS::TLS
-            PROPERTIES
-                INTERFACE_INCLUDE_DIRECTORIES "${OPENTLS_INCLUDE_DIRS}"
-                IMPORTED_LOCATION "${OPENTLS_TLS_LIBRARIES}"
-                INTERFACE_LINK_LIBRARIES ${OPENSSL_LIBRARIES}
+	set(OPENTLS_LIBRARIES ${OPENTLS_LIBRARY})
+    # Set OPENTLS::TLS
+    if(NOT TARGET OPENTLS::TLS AND EXISTS "${OPENTLS_LIBRARY}")
+        add_library(OPENTLS::TLS UNKNOWN IMPORTED)
+        set_target_properties(OPENTLS::TLS PROPERTIES
+			IMPORTED_LOCATION "${OPENTLS_LIBRARY}"
+			INTERFACE_INCLUDE_DIRECTORIES "${OPENTLS_INCLUDE_DIRS}"
+			INTERFACE_LINK_LIBRARIES ${OPENSSL_LIBRARIES}
         )
-    endif() # openTLS::TLS
+    endif() # OPENTLS::TLS
 endif(OPENTLS_FOUND)

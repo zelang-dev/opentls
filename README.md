@@ -72,6 +72,8 @@ endif()
 
 target_include_directories(your_project PUBLIC $<BUILD_INTERFACE:${OPENSSL_INCLUDE_DIR}
  $<INSTALL_INTERFACE:${OPENSSL_INCLUDE_DIR})
-target_include_directories(your_project PUBLIC $<BUILD_INTERFACE:${OPENTLS_INCLUDE_DIR} $<INSTALL_INTERFACE:${OPENTLS_INCLUDE_DIR})
-target_link_libraries(your_project PUBLIC opentls) # ${OPENTLS_TLS_LIBRARY}
+target_include_directories(your_project PUBLIC ${OPENTLS_INCLUDE_DIR}
+ $<INSTALL_INTERFACE:${OPENTLS_INCLUDE_DIR})
+target_link_libraries(your_project PUBLIC ${OPENTLS_LIBRARY})
+target_link_libraries(your_project PUBLIC ${OPENSSL_LIBRARIES})
 ```
