@@ -61,15 +61,17 @@ cmake --build . --config Debug/Release
 Add to **CMakeLists.txt**
 
 ```c
-find_package(openTLS)
+find_package(opentls QUIET)
 if(NOT opentls_FOUND)
-    FetchContent_Declare(openTLS
+    FetchContent_Declare(opentls
         URL https://github.com/zelang-dev/openTLS/archive/refs/heads/main.zip
-        URL_MD5 00000000000000000000000000000
+        URL_MD5 3557505d0f867d29118672e52089cddd
     )
-    FetchContent_MakeAvailable(openTLS)
+    FetchContent_MakeAvailable(opentls)
 endif()
 
+target_include_directories(your_project PUBLIC $<BUILD_INTERFACE:${OPENSSL_INCLUDE_DIR}
+ $<INSTALL_INTERFACE:${OPENSSL_INCLUDE_DIR})
 target_include_directories(your_project PUBLIC $<BUILD_INTERFACE:${OPENTLS_INCLUDE_DIR} $<INSTALL_INTERFACE:${OPENTLS_INCLUDE_DIR})
-target_link_libraries(your_project PUBLIC ${OPENTLS_TLS_LIBRARY}) # openTLS::TLS or openTLS
+target_link_libraries(your_project PUBLIC opentls) # ${OPENTLS_TLS_LIBRARY}
 ```
