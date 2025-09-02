@@ -72,7 +72,6 @@ find_path(opentls_INCLUDE_DIR
     NAMES tls.h
 )
 mark_as_advanced(opentls_INCLUDE_DIR)
-set(OPENTLS_INCLUDE_DIR ${INCLUDE_INSTALL_DIR})
 
 include (FindPackageHandleStandardArgs)
 # Set Find Package Arguments
@@ -93,7 +92,7 @@ if(OPENTLS_FOUND)
 	set(OPENTLS_INCLUDE_DIRS ${OPENTLS_INCLUDE_DIR})
 	set(OPENTLS_LIBRARIES ${OPENTLS_LIBRARY})
     # Set OPENTLS::TLS
-    if(NOT TARGET OPENTLS::TLS AND EXISTS "${OPENTLS_LIBRARY}")
+    if(NOT TARGET OPENTLS::TLS)
         add_library(OPENTLS::TLS UNKNOWN IMPORTED)
         set_target_properties(OPENTLS::TLS PROPERTIES
 			IMPORTED_LOCATION "${OPENTLS_LIBRARY}"
