@@ -64,16 +64,18 @@ Add to **CMakeLists.txt**
 find_package(opentls QUIET)
 if(NOT opentls_FOUND)
     FetchContent_Declare(opentls
-        URL https://github.com/zelang-dev/openTLS/archive/refs/tags/4.1.0.zip
+        URL https://github.com/zelang-dev/openTLS/archive/refs/tags/4.1.2.zip
         URL_MD5 8214dec1bf013af836efb2dae8882c30
     )
     FetchContent_MakeAvailable(opentls)
 endif()
 
-target_include_directories(your_project PUBLIC $<BUILD_INTERFACE:${OPENSSL_INCLUDE_DIR}
+target_include_directories(your_project PUBLIC $<BUILD_INTERFACE:${OPENSSL_INCLUDE_DIR}/include
  $<INSTALL_INTERFACE:${OPENSSL_INCLUDE_DIR})
 target_include_directories(your_project PUBLIC ${OPENTLS_INCLUDE_DIR}
  $<INSTALL_INTERFACE:${OPENTLS_INCLUDE_DIR})
-target_link_libraries(your_project PUBLIC ${OPENTLS_LIBRARY})
-target_link_libraries(your_project PUBLIC ${OPENSSL_LIBRARIES})
+
+target_link_libraries(your_project PUBLIC ${OPENSSL_SSL_LIBRARY})
+target_link_libraries(your_project PUBLIC ${OPENSSL_CRYPTO_LIBRARY})
+target_link_libraries(your_project PUBLIC opentls)
 ```

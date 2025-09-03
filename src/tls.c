@@ -39,6 +39,105 @@ static struct tls_config *tls_config_default;
 
 static int tls_init_rv = -1;
 
+static int load_verify_mem(SSL_CTX *ctx, void *buf, int len)
+{
+	X509_STORE *store;
+	BIO *in = NULL;
+	STACK_OF(X509_INFO) *inf = NULL;
+	X509_INFO *itmp;
+	int i, count = 0, ok = 0;
+
+	store = SSL_CTX_get_cert_store(ctx);
+
+	if ((in = BIO_new_mem_buf(buf, len)) == NULL)
+		goto done;
+
+	if ((inf = PEM_X509_INFO_read_bio(in, NULL, NULL, NULL)) == NULL)
+		goto done;
+
+	for (i = 0; i < sk_X509_INFO_num(inf); i++) {
+		itmp = sk_X509_INFO_value(inf, i);
+		if (itmp->x509) {
+			if ((ok = X509_STORE_add_cert(store, itmp->x509)) == 0)
+				goto done;
+			count++;
+		}
+		if (itmp->crl) {
+			if ((ok = X509_STORE_add_crl(store, itmp->crl)) == 0)
+				goto done;
+			count++;
+		}
+	}
+
+	ok = count != 0;
+ done:
+	if (count == 0)
+		X509err(0xfff, ERR_R_PEM_LIB);
+	if (inf != NULL)
+		sk_X509_INFO_pop_free(inf, X509_INFO_free);
+	if (in != NULL)
+		BIO_free(in);
+	return (ok);
+}
+
+static int
+use_certificate_chain_bio(SSL_CTX *ctx, BIO *in) {
+	X509 *ca, *x = NULL;
+	unsigned long err;
+	int ret = 0;
+
+	if ((x = PEM_read_bio_X509_AUX(in, NULL, NULL, NULL)) == NULL) {
+		SSLerr(0xfff, ERR_R_PEM_LIB);
+		goto err;
+	}
+
+	if (!SSL_CTX_use_certificate(ctx, x))
+		goto err;
+
+	if (!SSL_CTX_clear_chain_certs(ctx))
+		goto err;
+
+	/* Process any additional CA certificates. */
+	while ((ca = PEM_read_bio_X509(in, NULL, NULL, NULL)) != NULL) {
+		if (!SSL_CTX_add0_chain_cert(ctx, ca)) {
+			X509_free(ca);
+			goto err;
+		}
+	}
+
+	/* When the while loop ends, it's usually just EOF. */
+	err = ERR_peek_last_error();
+	if (ERR_GET_LIB(err) == ERR_LIB_PEM &&
+		ERR_GET_REASON(err) == PEM_R_NO_START_LINE) {
+		ERR_clear_error();
+		ret = 1;
+	}
+
+err:
+	X509_free(x);
+
+	return (ret);
+}
+
+static int
+use_certificate_chain_mem(SSL_CTX *ctx, void *buf, int len) {
+	BIO *in;
+	int ret = 0;
+
+	in = BIO_new_mem_buf(buf, len);
+	if (in == NULL) {
+		SSLerr(0xfff, ERR_R_BUF_LIB);
+		goto end;
+	}
+
+	ret = use_certificate_chain_bio(ctx, in);
+
+end:
+	BIO_free(in);
+
+	return (ret);
+}
+
 static void
 tls_do_init(void)
 {
@@ -496,7 +595,7 @@ tls_configure_ssl_keypair(struct tls *ctx, SSL_CTX *ssl_ctx,
 			goto err;
 		}
 
-		if (SSL_CTX_use_certificate_chain_mem(ssl_ctx,
+		if (use_certificate_chain_mem(ssl_ctx,
 		    keypair->cert_mem, keypair->cert_len) != 1) {
 			tls_set_errorx(ctx, TLS_ERROR_UNKNOWN,
 			    "failed to load certificate");
@@ -651,7 +750,7 @@ tls_configure_ssl_verify(struct tls *ctx, SSL_CTX *ssl_ctx, int verify)
 			    "ca too long");
 			goto err;
 		}
-		if (SSL_CTX_load_verify_mem(ssl_ctx, ca_mem, ca_len) != 1) {
+		if (load_verify_mem(ssl_ctx, ca_mem, ca_len) != 1) {
 			tls_set_errorx(ctx, TLS_ERROR_UNKNOWN,
 			    "ssl verify memory setup failure");
 			goto err;

@@ -4,7 +4,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 	cmake_policy(SET CMP0091 NEW)
 endif()
 
-project(openTLS VERSION 4.1.0
+project(opentls VERSION 4.1.0
     LANGUAGES C
 )
 
@@ -25,8 +25,11 @@ include(GNUInstallDirs)
 set(BUILD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BUILD_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/built")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-set(CMAKE_POSITION_INDEPENDENT_CODE true)
+
+option(BUILD_SHARED_LIBS    "Build the library as a shared (dynamically-linked) " OFF)
 
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/src/VERSION TLS_VERSION)
 string(STRIP ${TLS_VERSION} TLS_VERSION)
@@ -39,19 +42,9 @@ if(USE_STATIC_MSVC_RUNTIMES)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
-set( ENABLE_OPENTLS_INSTALL ON )
+message("Generated with config types: ${CMAKE_CONFIGURATION_TYPES}")
 
-# Set a default build type if none was specified
-set(default_build_type "Release")
-
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
-  set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
-      STRING "Choose the type of build." FORCE)
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
-	  STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
+set(CMAKE_CONFIGURATION_TYPES=Debug;Release)
 
 # Do not disable assertions based on CMAKE_BUILD_TYPE
 foreach(_build_type "Release" "MinSizeRel" "RelWithDebInfo")
@@ -591,7 +584,12 @@ if(NOT HAVE_TIMINGSAFE_MEMCMP)
 	set(COMPAT_SRC ${COMPAT_SRC} compat/timingsafe_memcmp.c)
 endif()
 
-add_library(${PROJECT_NAME} ${TLS_SRC} ${COMPAT_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/src/empty.c)
+if(BUILD_SHARED_LIBS)
+    add_library(${PROJECT_NAME} SHARED ${TLS_SRC} ${COMPAT_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/src/empty.c)
+else()
+    add_library(${PROJECT_NAME} STATIC ${TLS_SRC} ${COMPAT_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/src/empty.c)
+endif()
+
 target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSSL_INCLUDE_DIR})
 
 target_include_directories(${PROJECT_NAME}
@@ -613,7 +611,7 @@ add_definitions(-DTLS_DEFAULT_CA_FILE=\"${OPENSSLDIR}/cert.pem\")
 set_target_properties(${PROJECT_NAME} PROPERTIES
 	OUTPUT_NAME ${PROJECT_NAME}
 	ARCHIVE_OUTPUT_NAME ${PROJECT_NAME}
-	EXPORT_NAME TLS
+	EXPORT_NAME ${PROJECT_NAME}
 	VERSION ${TLS_VERSION}
 	SOVERSION ${TLS_MAJOR_VERSION}
 )
