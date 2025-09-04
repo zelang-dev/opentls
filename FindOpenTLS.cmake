@@ -60,11 +60,11 @@ Set OPENTLS_ROOT_DIR to the root directory of an openTLS installation.
 find_library(opentls_LIBRARY
     NAMES
         opentls
-        libtls
-        libretls
-        openTLS
-        libopenTLS
+        libopentls
         tls
+        libtls
+        retls
+        libretls
 )
 mark_as_advanced(opentls_LIBRARY)
 
