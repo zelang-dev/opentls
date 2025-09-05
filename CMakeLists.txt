@@ -430,8 +430,12 @@ if(ENABLE_ASM)
 	endif()
 endif()
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/tls.sym DESTINATION
-	${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/tls.sym
+	DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cert.pem
+	DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 set(
 	TLS_SRC
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls.c
@@ -600,7 +604,16 @@ target_include_directories(${PROJECT_NAME}
 
 export_symbol(${PROJECT_NAME} ${CMAKE_CURRENT_BINARY_DIR}/tls.sym)
 
-set(OPENSSLDIR ${OPENSSL_ROOT_DIR} CACHE PATH "Set the default openssl directory" FORCE)
+execute_process(
+    COMMAND openssl version -d
+    OUTPUT_VARIABLE openssl_dir_log
+	OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+string(REPLACE "OPENSSLDIR: " "" openssl_dir ${openssl_dir_log})
+string(REPLACE "\"" "" openssl_dir_log ${openssl_dir})
+message("OPENSSLDIR=${openssl_dir_log}")
+
+set(OPENSSLDIR ${openssl_dir_log} CACHE PATH "Set the default openssl directory" FORCE)
 add_definitions(-DTLS_DEFAULT_CA_FILE=\"${OPENSSLDIR}/cert.pem\")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
