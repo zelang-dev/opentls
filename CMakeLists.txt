@@ -686,5 +686,22 @@ install(
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
 
+if(OPENSSLDIR STREQUAL "")
+	if(WIN32)
+		set(OPENSSLDIR "C:/Windows/opemtls/ssl")
+	else()
+		set(OPENSSLDIR "${CMAKE_INSTALL_SYSCONFDIR}/ssl")
+	endif()
+
+	set(CONF_DIR "${CMAKE_INSTALL_SYSCONFDIR}/ssl")
+else()
+	set(CONF_DIR "${OPENSSLDIR}")
+endif()
+
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 install(FILES include/tls.h DESTINATION include)
+install(FILES cert.pem DESTINATION ${CONF_DIR})
+
+if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+	file(COPY cert.pem DESTINATION ${CMAKE_SOURCE_DIR})
+endif()
