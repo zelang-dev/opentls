@@ -483,9 +483,10 @@ tls_config_set_ciphers(struct tls_config *config, const char *ciphers)
 	SSL_CTX *ssl_ctx = NULL;
 
 	if (ciphers == NULL ||
-	    strcasecmp(ciphers, "default") == 0 ||
 	    strcasecmp(ciphers, "secure") == 0)
 		ciphers = TLS_CIPHERS_SECURE;
+	else if (strcasecmp(ciphers, "default") == 0)
+		ciphers = TLS_CIPHERS_DEFAULT;
 	else if (strcasecmp(ciphers, "compat") == 0)
 		ciphers = TLS_CIPHERS_COMPAT;
 	else if (strcasecmp(ciphers, "legacy") == 0)

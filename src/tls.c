@@ -141,8 +141,6 @@ end:
 static void
 tls_do_init(void)
 {
-	OPENSSL_init_ssl(OPENSSL_INIT_NO_LOAD_CONFIG, NULL);
-
 	if (BIO_sock_init() != 1)
 		return;
 
