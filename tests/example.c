@@ -22,6 +22,7 @@ int main()
 	if (tls_config_set_ciphers(tls_config, "compat") != 0)
 		goto err;
 
+	tls_config_set_ca_file(tls_config, "./cert.pem");
 	tls_config_insecure_noverifycert(tls_config);
 	tls_config_insecure_noverifyname(tls_config);
 
@@ -34,9 +35,11 @@ int main()
 	if ((written = tls_write(tls, "GET /\r\n", 7)) < 0)
 		goto err;
 
+	printf("bug %d\n", (int)written);
 	if ((read = tls_read(tls, buf, sizeof(buf))) < 0)
 		goto err;
 
+	printf("unreachable %d\n", (int)read);
 	buf[read - 1] = '\0';
 	puts(buf);
 
@@ -46,6 +49,6 @@ int main()
 	return 0;
 
 err:
-	fprintf(stderr, "%s\n", tls_error(tls));
+	fprintf(stderr, "Error: %d\n", tls_error_code(tls));
 	return 1;
 }

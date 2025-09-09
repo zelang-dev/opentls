@@ -5,6 +5,9 @@ include_directories(
 	../include/compat
 )
 
+file(COPY ca-root-rsa.pem DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY server1-rsa-chain.pem DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY server1-rsa.pem DESTINATION ${CMAKE_BINARY_DIR})
 add_definitions(-D_PATH_SSL_CA_FILE=\"${CMAKE_CURRENT_SOURCE_DIR}/../cert.pem\")
 
 file(TO_NATIVE_PATH ${CMAKE_CURRENT_SOURCE_DIR} TEST_SOURCE_DIR)
@@ -31,9 +34,11 @@ if(NOT (CMAKE_SYSTEM_NAME MATCHES "WindowsStore" OR EMSCRIPTEN))
 	add_executable(tlstest ${TLSTEST_SRC})
 	target_link_libraries(tlstest ${PROJECT_NAME})
 	if(NOT WIN32)
-		add_test(NAME tlstest COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tlstest.sh)
+		add_test(NAME tlstest COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tlstest.sh
+		WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 	else()
-		add_test(NAME tlstest COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tlstest.bat $<TARGET_FILE:tlstest>)
+		add_test(NAME tlstest COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tlstest.bat $<TARGET_FILE:tlstest>
+		WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 	endif()
 endif()
 
