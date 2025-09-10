@@ -47,7 +47,7 @@ typedef SSIZE_T ssize_t;
 #define TLS_PROTOCOL_TLSv1_3	(1 << 4)
 
 #define TLS_PROTOCOL_TLSv1 \
-	(TLS_PROTOCOL_TLSv1_2|TLS_PROTOCOL_TLSv1_3)
+	(TLS_PROTOCOL_TLSv1_1|TLS_PROTOCOL_TLSv1_2|TLS_PROTOCOL_TLSv1_3)
 
 #define TLS_PROTOCOLS_ALL TLS_PROTOCOL_TLSv1
 #define TLS_PROTOCOLS_DEFAULT TLS_PROTOCOL_TLSv1_2
@@ -104,7 +104,6 @@ const char *tls_error(struct tls *_ctx);
 
 int tls_config_error_code(struct tls_config *_config);
 int tls_error_code(struct tls *_ctx);
-
 
 struct tls_config *tls_config_new(void);
 void tls_config_free(struct tls_config *_config);
