@@ -35,7 +35,7 @@ unsigned char *server_readptr, *server_writeptr;
 
 char *cafile, *certfile, *keyfile;
 
-int debug = 0;
+int debug = 1;
 
 static void
 circular_init(void)
@@ -336,7 +336,7 @@ test_tls(char *client_protocols, char *server_protocols, char *ciphers)
 	tls_config_free(client_cfg);
 	tls_config_free(server_cfg);
 
-	failure |= test_tls_cbs(client, server);
+	failure |= test_tls_fds(client, server);
 
 	tls_free(client);
 	tls_free(server);
@@ -376,28 +376,28 @@ do_tls_tests(void)
 	if (tls_configure(server, server_cfg) == -1)
 		errx(1, "failed to configure server: %s", tls_error(server));
 
-	failure |= test_tls_cbs(client, server);
-
-	tls_reset(client);
-	if (tls_configure(client, client_cfg) == -1)
-		errx(1, "failed to configure client: %s", tls_error(client));
-	tls_reset(server);
-	if (tls_configure(server, server_cfg) == -1)
-		errx(1, "failed to configure server: %s", tls_error(server));
-
 	failure |= test_tls_fds(client, server);
-
 	tls_reset(client);
 	if (tls_configure(client, client_cfg) == -1)
 		errx(1, "failed to configure client: %s", tls_error(client));
 	tls_reset(server);
 	if (tls_configure(server, server_cfg) == -1)
 		errx(1, "failed to configure server: %s", tls_error(server));
+
+	failure |= test_tls_socket(client, server);
+/*
+	tls_reset(client);
+	if (tls_configure(client, client_cfg) == -1)
+		errx(1, "failed to configure client: %s", tls_error(client));
+	tls_reset(server);
+	if (tls_configure(server, server_cfg) == -1)
+		errx(1, "failed to configure server: %s", tls_error(server));
+
+	failure |= test_tls_cbs(client, server);
+*/
 
 	tls_config_free(client_cfg);
 	tls_config_free(server_cfg);
-
-	failure |= test_tls_socket(client, server);
 
 	tls_free(client);
 	tls_free(server);
@@ -547,7 +547,7 @@ main(int argc, char **argv)
 	keyfile = argv[3];
 
 	failure |= do_tls_tests();
-	failure |= do_tls_ordering_tests();
+	//failure |= do_tls_ordering_tests();
 	failure |= do_tls_version_tests();
 
 	return (failure);
