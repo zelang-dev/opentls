@@ -495,7 +495,7 @@ tls_config_set_ciphers(struct tls_config *config, const char *ciphers)
 	    strcasecmp(ciphers, "insecure") == 0)
 		ciphers = TLS_CIPHERS_ALL;
 
-	if ((ssl_ctx = SSL_CTX_new(SSLv23_method())) == NULL) {
+	if ((ssl_ctx = SSL_CTX_new(TLS_method())) == NULL) {
 		tls_config_set_errorx(config, TLS_ERROR_OUT_OF_MEMORY,
 		    "out of memory");
 		goto err;

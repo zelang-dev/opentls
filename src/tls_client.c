@@ -317,7 +317,7 @@ tls_connect_common(struct tls *ctx, const char *servername)
 			ctx->servername[servername_len - 1] = '\0';
 	}
 
-	if ((ctx->ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL) {
+	if ((ctx->ssl_ctx = SSL_CTX_new(TLS_client_method())) == NULL) {
 		tls_set_errorx(ctx, TLS_ERROR_UNKNOWN, "ssl context failure");
 		goto err;
 	}

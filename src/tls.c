@@ -31,6 +31,7 @@
 #include <openssl/safestack.h>
 #include <openssl/ssl.h>
 #include <openssl/x509.h>
+#include <openssl/bio.h>
 
 #include <tls.h>
 #include "tls_internal.h"
@@ -1067,4 +1068,15 @@ tls_close(struct tls *ctx)
 	/* Prevent callers from performing incorrect error handling */
 	errno = 0;
 	return (rv);
+}
+
+int tls_flush(struct tls *ctx) {
+	int rv = 0;
+	BIO *wbio = SSL_get_rbio(ctx->ssl_conn);
+	if (wbio == NULL || BIO_flush(wbio) == -1) {
+		tls_set_errorx(ctx, TLS_ERROR_UNKNOWN, "flush failed");
+		rv = -1;
+	}
+
+	return rv;
 }

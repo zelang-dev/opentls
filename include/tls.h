@@ -233,6 +233,9 @@ time_t tls_peer_ocsp_revocation_time(struct tls *_ctx);
 time_t tls_peer_ocsp_this_update(struct tls *_ctx);
 const char *tls_peer_ocsp_url(struct tls *_ctx);
 
+/* Custom similar to `BIO_flush` */
+int tls_flush(struct tls *_ctx);
+
 #ifdef __cplusplus
 }
 #endif

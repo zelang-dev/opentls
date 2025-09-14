@@ -233,7 +233,7 @@ tls_configure_server_ssl(struct tls *ctx, SSL_CTX **ssl_ctx,
 {
 	SSL_CTX_free(*ssl_ctx);
 
-	if ((*ssl_ctx = SSL_CTX_new(SSLv23_server_method())) == NULL) {
+	if ((*ssl_ctx = SSL_CTX_new(TLS_server_method())) == NULL) {
 		tls_set_errorx(ctx, TLS_ERROR_UNKNOWN, "ssl context failure");
 		goto err;
 	}
