@@ -29,7 +29,9 @@ ssize_t pwrite(int d, const void *buf, size_t nbytes, off_t offset);
 
 #define R_OK    4
 #define W_OK    2
-#define X_OK    0
+#ifndef X_OK
+#	define X_OK    0
+#endif
 #define F_OK    0
 
 #define SEEK_SET        0
@@ -48,7 +50,6 @@ static inline unsigned int sleep(unsigned int seconds)
 #endif
 
 int ftruncate(int fd, off_t length);
-uid_t getuid(void);
 ssize_t pread(int d, void *buf, size_t nbytes, off_t offset);
 ssize_t pwrite(int d, const void *buf, size_t nbytes, off_t offset);
 

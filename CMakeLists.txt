@@ -5,7 +5,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 project(opentls
-	VERSION 4.1.8
+	VERSION 4.1.9
 	DESCRIPTION "A new TLS library, designed to make it easier to write foolproof applications."
     LANGUAGES C
 )
@@ -39,7 +39,6 @@ string(REPLACE ":" "." TLS_VERSION ${TLS_VERSION})
 string(REGEX REPLACE "\\..*" "" TLS_MAJOR_VERSION ${TLS_VERSION})
 
 option(USE_STATIC_MSVC_RUNTIMES "Use /MT instead of /MD in MSVC" OFF)
-option(ENABLE_ASM "Enable assembly" ON)
 if(USE_STATIC_MSVC_RUNTIMES)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
@@ -47,15 +46,6 @@ endif()
 message("Generated with config types: ${CMAKE_CONFIGURATION_TYPES}")
 
 set(CMAKE_CONFIGURATION_TYPES=Debug;Release)
-
-# Do not disable assertions based on CMAKE_BUILD_TYPE
-foreach(_build_type "Release" "MinSizeRel" "RelWithDebInfo")
-	foreach(_lang C CXX)
-		string(TOUPPER "CMAKE_${_lang}_FLAGS_${_build_type}" _var)
-		string(REGEX REPLACE "(^| )[/-]D *NDEBUG($| )" " " ${_var} "${${_var}}")
-	endforeach()
-endforeach()
-
 find_package(OpenSSL 1.1.0...<4.0.0 REQUIRED)
 if(WIN32)
 	add_definitions(-DNO_GETTIMEOFDAY)
@@ -361,9 +351,6 @@ endif()
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "(aarch64|arm64|ARM64)")
 	set(HOST_AARCH64 true)
-	if(WIN32)
-		set(ENABLE_ASM false)
-	endif()
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
 	set(HOST_ARM true)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "SunOS" AND CMAKE_SYSTEM_PROCESSOR MATCHES "i386")
@@ -371,7 +358,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "SunOS" AND CMAKE_SYSTEM_PROCESSOR MATCHES "i3
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64|amd64|AMD64)")
 	set(HOST_X86_64 true)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "(i[3-6]86|[xX]86)")
-	set(ENABLE_ASM false)
 	set(HOST_I386 true)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "loongarch64")
 	set(HOST_LOONGARCH64 true)
@@ -387,8 +373,6 @@ elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "riscv64")
 	set(HOST_RISCV64 true)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "sparc64")
 	set(HOST_SPARC64 true)
-else()
-	set(ENABLE_ASM false)
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
@@ -411,26 +395,6 @@ if(SIZEOF_TIME_T STREQUAL "4")
 	add_definitions(-DSMALL_TIME_T)
 	message(WARNING " ** Warning, this system is unable to represent times past 2038\n"
 	                " ** It will behave incorrectly when handling valid RFC5280 dates")
-endif()
-
-if(ENABLE_ASM)
-	if(CMAKE_C_COMPILER_ABI STREQUAL "ELF")
-		if(HOST_X86_64)
-			set(HOST_ASM_ELF_X86_64 true)
-		elseif(HOST_ARM)
-			set(HOST_ASM_ELF_ARMV4 true)
-		elseif(CMAKE_SYSTEM_NAME STREQUAL "SunOS" AND HOST_I386)
-			set(HOST_ASM_ELF_X86_64 true)
-		endif()
-		add_definitions(-DHAVE_GNU_STACK)
-	elseif(APPLE AND HOST_X86_64)
-		set(HOST_ASM_MACOSX_X86_64 true)
-	elseif(MSVC AND (CMAKE_GENERATOR MATCHES "Win64" OR CMAKE_GENERATOR_PLATFORM STREQUAL "x64"))
-		set(HOST_ASM_MASM_X86_64 true)
-		ENABLE_LANGUAGE(ASM_MASM)
-	elseif(MINGW AND HOST_X86_64)
-		set(HOST_ASM_MINGW64_X86_64 true)
-	endif()
 endif()
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/tls.sym

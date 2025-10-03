@@ -26,6 +26,14 @@
 
 #include <openssl/ssl.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <time.h>
+extern uid_t getuid(void);
+#ifndef timegm
+#	define timegm(x) _mkgmtime(x)
+#endif
+#endif
+
 __BEGIN_HIDDEN_DECLS
 
 #ifndef TLS_DEFAULT_CA_FILE
@@ -268,27 +276,13 @@ int tls_set_cbs(struct tls *ctx,
     tls_read_cb read_cb, tls_write_cb write_cb, void *cb_arg);
 
 void tls_error_clear(struct tls_error *error);
-int tls_error_set(struct tls_error *error, int code, const char *fmt, ...)
-    __attribute__((__format__ (printf, 3, 4)))
-    __attribute__((__nonnull__ (3)));
-int tls_error_setx(struct tls_error *error, int code, const char *fmt, ...)
-    __attribute__((__format__ (printf, 3, 4)))
-    __attribute__((__nonnull__ (3)));
-int tls_config_set_error(struct tls_config *cfg, int code, const char *fmt, ...)
-    __attribute__((__format__ (printf, 3, 4)))
-    __attribute__((__nonnull__ (3)));
-int tls_config_set_errorx(struct tls_config *cfg, int code, const char *fmt, ...)
-    __attribute__((__format__ (printf, 3, 4)))
-    __attribute__((__nonnull__ (3)));
-int tls_set_error(struct tls *ctx, int code, const char *fmt, ...)
-    __attribute__((__format__ (printf, 3, 4)))
-    __attribute__((__nonnull__ (3)));
-int tls_set_errorx(struct tls *ctx, int code, const char *fmt, ...)
-    __attribute__((__format__ (printf, 3, 4)))
-    __attribute__((__nonnull__ (3)));
-int tls_set_ssl_errorx(struct tls *ctx, int code, const char *fmt, ...)
-    __attribute__((__format__ (printf, 3, 4)))
-    __attribute__((__nonnull__ (3)));
+int tls_error_set(struct tls_error *error, int code, const char *fmt, ...);
+int tls_error_setx(struct tls_error *error, int code, const char *fmt, ...);
+int tls_config_set_error(struct tls_config *cfg, int code, const char *fmt, ...);
+int tls_config_set_errorx(struct tls_config *cfg, int code, const char *fmt, ...);
+int tls_set_error(struct tls *ctx, int code, const char *fmt, ...);
+int tls_set_errorx(struct tls *ctx, int code, const char *fmt, ...);
+int tls_set_ssl_errorx(struct tls *ctx, int code, const char *fmt, ...);
 
 int tls_ssl_error(struct tls *ctx, SSL *ssl_conn, int ssl_ret,
     const char *prefix);
