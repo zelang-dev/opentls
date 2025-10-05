@@ -43,6 +43,9 @@ int main()
 	if (tls_close(tls) != 0)
 		goto err;
 
+	tls_config_free(tls_config);
+	tls_free(tls);
+
 	return 0;
 
 err:

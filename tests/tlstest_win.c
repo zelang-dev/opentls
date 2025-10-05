@@ -1,4 +1,4 @@
-/* $OpenBSD: tlstest.c,v 1.16 2024/08/02 15:02:22 tb Exp $ */
+/* $OpenBSD: tlstest.c,v 1.15 2022/07/16 07:46:08 tb Exp $ */
 /*
  * Copyright (c) 2017 Joel Sing <jsing@openbsd.org>
  *
@@ -336,7 +336,7 @@ test_tls(char *client_protocols, char *server_protocols, char *ciphers)
 	tls_config_free(client_cfg);
 	tls_config_free(server_cfg);
 
-	failure |= test_tls_fds(client, server);
+	failure |= test_tls_cbs(client, server);
 
 	tls_free(client);
 	tls_free(server);
@@ -368,7 +368,7 @@ do_tls_tests(void)
 	if (tls_config_set_keypair_file(server_cfg, certfile, keyfile) == -1)
 		errx(1, "failed to set keypair: %s",
 		    tls_config_error(server_cfg));
-/*
+
 	tls_reset(client);
 	if (tls_configure(client, client_cfg) == -1)
 		errx(1, "failed to configure client: %s", tls_error(client));
@@ -377,7 +377,7 @@ do_tls_tests(void)
 		errx(1, "failed to configure server: %s", tls_error(server));
 
 	failure |= test_tls_cbs(client, server);
-*/
+
 	tls_reset(client);
 	if (tls_configure(client, client_cfg) == -1)
 		errx(1, "failed to configure client: %s", tls_error(client));
@@ -547,7 +547,7 @@ main(int argc, char **argv)
 	keyfile = argv[3];
 
 	failure |= do_tls_tests();
-	//failure |= do_tls_ordering_tests();
+ 	failure |= do_tls_ordering_tests();
 	failure |= do_tls_version_tests();
 
 	return (failure);

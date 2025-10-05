@@ -37,8 +37,19 @@
 #include "tls_internal.h"
 
 static struct tls_config *tls_config_default;
+static int tls_atexit_set = 0;
 
 static int tls_init_rv = -1;
+
+void tls_default_free(void) {
+	if (tls_config_default != NULL) {
+		free(tls_config_default->ecdhecurves);
+		free(tls_config_default->keypair);
+		free((void *)tls_config_default->ciphers);
+		free(tls_config_default);
+		tls_config_default = NULL;
+	}
+}
 
 static int load_verify_mem(SSL_CTX *ctx, void *buf, int len)
 {
@@ -157,6 +168,11 @@ int
 tls_init(void)
 {
 	static pthread_once_t once = PTHREAD_ONCE_INIT;
+
+	if (!tls_atexit_set) {
+		tls_atexit_set = 1;
+		atexit(tls_default_free);
+	}
 
 	if (pthread_once(&once, tls_do_init) != 0)
 		return -1;
@@ -1072,7 +1088,7 @@ tls_close(struct tls *ctx)
 
 int tls_flush(struct tls *ctx) {
 	int rv = 0;
-	BIO *wbio = SSL_get_rbio(ctx->ssl_conn);
+	BIO *wbio = SSL_get_wbio(ctx->ssl_conn);
 	if (wbio == NULL || BIO_flush(wbio) == -1) {
 		tls_set_errorx(ctx, TLS_ERROR_UNKNOWN, "flush failed");
 		rv = -1;

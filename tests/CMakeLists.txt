@@ -31,7 +31,11 @@ endfunction()
 # tlstest
 # Emscripten does not support socketpair syscall.
 if(NOT (CMAKE_SYSTEM_NAME MATCHES "WindowsStore" OR EMSCRIPTEN))
-	set(TLSTEST_SRC tlstest.c)
+	if(WIN32)
+		set(TLSTEST_SRC tlstest_win.c)
+	else()
+		set(TLSTEST_SRC tlstest.c)
+	endif()
 	check_symbol_exists(pipe2 "fcntl.h;unistd.h" HAVE_PIPE2)
 	if(HAVE_PIPE2)
 		add_definitions(-DHAVE_PIPE2)

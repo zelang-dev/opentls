@@ -9,8 +9,6 @@
 
 #define NO_REDEF_POSIX_FUNCTIONS
 
-#include <sys/time.h>
-
 #include <ws2tcpip.h>
 #include <windows.h>
 
@@ -21,25 +19,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#include <sys/stat.h>
-
-static int
-is_socket(int fd)
-{
-	// Border case: Don't break std* file descriptors
-	if (fd < 3)
-		return 0;
-
-	// All locally-allocated file descriptors will have the high bit set
-	return (fd & 0x80000000) == 0;
-}
-
-static int
-get_real_fd(int fd)
-{
-	return (fd & 0x7fffffff);
-}
 
 void
 posix_perror(const char *s)
@@ -63,12 +42,6 @@ posix_fopen(const char *path, const char *mode)
 }
 
 int
-libressl_fstat(int fd, struct stat *statbuf)
-{
-	return fstat(get_real_fd(fd), statbuf);
-}
-
-int
 posix_open(const char *path, ...)
 {
 	va_list ap;
@@ -87,11 +60,7 @@ posix_open(const char *path, ...)
 		flags |= O_NOINHERIT;
 	}
 	flags &= ~O_NONBLOCK;
-
-	const int fh = open(path, flags, mode);
-
-	// Set high bit to mark file descriptor as a file handle
-	return fh + 0x80000000;
+	return open(path, flags, mode);
 }
 
 char *
@@ -179,6 +148,51 @@ wsa_errno(int err)
 	return -1;
 }
 
+/*
+ * Employ a similar trick to cpython (pycore_fileutils.h) where the CRT report
+ * handler is disabled while checking if a descriptor is a socket or a file
+ */
+#if defined _MSC_VER && _MSC_VER >= 1900
+
+#include <crtdbg.h>
+#include <stdlib.h>
+
+static void noop_handler(const wchar_t *expression,	const wchar_t *function,
+    const wchar_t *file, unsigned int line, uintptr_t pReserved)
+{
+	return;
+}
+
+#define BEGIN_SUPPRESS_IPH \
+	int old_report_mode = _CrtSetReportMode(_CRT_ASSERT, 0); \
+	_invalid_parameter_handler old_handler = _set_thread_local_invalid_parameter_handler(noop_handler)
+#define END_SUPPRESS_IPH \
+	_CrtSetReportMode(_CRT_ASSERT, old_report_mode); \
+	_set_thread_local_invalid_parameter_handler(old_handler)
+
+#else
+
+#define BEGIN_SUPPRESS_IPH
+#define END_SUPPRESS_IPH
+
+#endif
+
+static int
+is_socket(int fd)
+{
+	intptr_t hd;
+
+	BEGIN_SUPPRESS_IPH;
+	hd = _get_osfhandle(fd);
+	END_SUPPRESS_IPH;
+
+	if (hd == (intptr_t)INVALID_HANDLE_VALUE) {
+		return 1; /* fd is not file descriptor */
+	}
+
+	return 0;
+}
+
 int
 posix_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 {
@@ -192,13 +206,14 @@ int
 posix_close(int fd)
 {
 	int rc;
+
 	if (is_socket(fd)) {
 		if ((rc = closesocket(fd)) == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			rc = wsa_errno(err);
 		}
 	} else {
-		rc = close(get_real_fd(fd));
+		rc = close(fd);
 	}
 	return rc;
 }
@@ -207,13 +222,14 @@ ssize_t
 posix_read(int fd, void *buf, size_t count)
 {
 	ssize_t rc;
+
 	if (is_socket(fd)) {
 		if ((rc = recv(fd, buf, count, 0)) == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			rc = wsa_errno(err);
 		}
 	} else {
-		rc = read(get_real_fd(fd), buf, count);
+		rc = read(fd, buf, count);
 	}
 	return rc;
 }
@@ -227,7 +243,7 @@ posix_write(int fd, const void *buf, size_t count)
 			rc = wsa_errno(WSAGetLastError());
 		}
 	} else {
-		rc = write(get_real_fd(fd), buf, count);
+		rc = write(fd, buf, count);
 	}
 	return rc;
 }
@@ -272,7 +288,7 @@ uid_t getuid(void)
 
 #ifdef _MSC_VER
 struct timezone;
-int gettimeofday(struct timeval *tp, void *tzp)
+int gettimeofday(struct timeval * tp, struct timezone * tzp)
 {
 	/*
 	 * Note: some broken versions only have 8 trailing zero's, the correct
@@ -289,7 +305,7 @@ int gettimeofday(struct timeval *tp, void *tzp)
 	time = ((uint64_t)file_time.dwLowDateTime);
 	time += ((uint64_t)file_time.dwHighDateTime) << 32;
 
-	tp->tv_sec = (long long)((time - EPOCH) / 10000000L);
+	tp->tv_sec = (long)((time - EPOCH) / 10000000L);
 	tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
 	return 0;
 }

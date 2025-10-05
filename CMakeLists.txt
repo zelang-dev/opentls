@@ -5,7 +5,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 project(opentls
-	VERSION 4.1.9
+	VERSION 4.1.10
 	DESCRIPTION "A new TLS library, designed to make it easier to write foolproof applications."
     LANGUAGES C
 )
@@ -403,20 +403,29 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/tls.sym
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cert.pem
 	DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+if(WIN32)
+	set(CONINFO ${CMAKE_CURRENT_SOURCE_DIR}/src/tls_conninfo.c)
+	set(VERIFY ${CMAKE_CURRENT_SOURCE_DIR}/src/tls_verify.c)
+else()
+	set(CONINFO ${CMAKE_CURRENT_SOURCE_DIR}/src/tls_conninfo_ex.c)
+	set(VERIFY ${CMAKE_CURRENT_SOURCE_DIR}/src/tls_verify_ex.c)
+endif()
+
 set(
 	TLS_SRC
+	${CMAKE_CURRENT_SOURCE_DIR}/src/a_time_posix.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_bio_cb.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_client.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_config.c
-	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_conninfo_ex.c
+	${CONINFO}
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_keypair.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_server.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_signer.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_ocsp.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_peer.c
 	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_util.c
-	${CMAKE_CURRENT_SOURCE_DIR}/src/tls_verify.c
+	${VERIFY}
 )
 
 if(WIN32)
