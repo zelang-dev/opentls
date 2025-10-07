@@ -286,7 +286,7 @@ uid_t getuid(void)
 	return 0;
 }
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(NO_GETTIMEOFDAY)
 struct timezone;
 int gettimeofday(struct timeval * tp, struct timezone * tzp)
 {

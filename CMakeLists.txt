@@ -5,7 +5,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 project(opentls
-	VERSION 4.1.10
+	VERSION 4.1.11
 	DESCRIPTION "A new TLS library, designed to make it easier to write foolproof applications."
     LANGUAGES C
 )
@@ -48,7 +48,6 @@ message("Generated with config types: ${CMAKE_CONFIGURATION_TYPES}")
 set(CMAKE_CONFIGURATION_TYPES=Debug;Release)
 find_package(OpenSSL 1.1.0...<4.0.0 REQUIRED)
 if(WIN32)
-	add_definitions(-DNO_GETTIMEOFDAY)
 	include_directories(${OPENSSL_INCLUDE_DIR})
 endif()
 
