@@ -263,11 +263,3 @@ OPENSSL_timegm(const struct tm *tm, time_t *out) {
 	return asn1_time_tm_to_time_t(tm, out);
 }
 LCRYPTO_ALIAS(OPENSSL_timegm);
-
-struct tm *
-OPENSSL_gmtime(const time_t *time, struct tm *out_tm) {
-	if (!asn1_time_time_t_to_tm(time, out_tm))
-		return NULL;
-	return out_tm;
-}
-LCRYPTO_ALIAS(OPENSSL_gmtime);
