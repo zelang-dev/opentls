@@ -65,7 +65,7 @@ find_package(opentls QUIET)
 if(NOT opentls_FOUND)
     FetchContent_Declare(opentls
         URL https://github.com/zelang-dev/opentls/archive/refs/tags/4.1.12.zip
-        URL_MD5 fc46dd989c4e61b1d6a6019ed3170f86
+        URL_MD5 0d95f587b35fa12991e42d763cf5f5bf
     )
     FetchContent_MakeAvailable(opentls)
 endif()
