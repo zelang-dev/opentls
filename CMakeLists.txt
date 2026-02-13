@@ -5,7 +5,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 project(opentls
-	VERSION 4.1.12
+	VERSION 4.1.13
 	DESCRIPTION "A new TLS library, designed to make it easier to write foolproof applications."
     LANGUAGES C
 )
@@ -635,7 +635,7 @@ set(CPACK_NSIS_MODIFY_PATH ON)
 set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 1)
 set(CPACK_VERBATIM_VARIABLES YES)
 
-set(CPACK_PACKAGE_VENDOR "https://github.com/zelang-dev/openTLS")
+set(CPACK_PACKAGE_VENDOR "https://github.com/zelang-dev/opentls")
 set(CPACK_PACKAGE_VERSION 4.1.0)
 
 set(CMAKE_INSTALL_CONFIG_NAME ${CMAKE_BUILD_TYPE})
@@ -645,7 +645,7 @@ set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 set(SYSCONFIG_INSTALL_DIR ${CMAKE_INSTALL_SYSCONFDIR}/${PROJECT_NAME}
     CACHE PATH "Location of configuration files" )
 
-configure_package_config_file(opentlsConfig.cmake.in
+configure_package_config_file(OpenTLSConfig.cmake.in
   	${CMAKE_CURRENT_BINARY_DIR}/opentlsConfig.cmake
 	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
 	PATH_VARS INCLUDE_INSTALL_DIR SYSCONFIG_INSTALL_DIR)
@@ -674,7 +674,7 @@ set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
 
 set(CPACK_RPM_PACKAGE_LICENSE "MIT")
-set(CPACK_RPM_PACKAGE_URL "https://zelang-dev.github.io/openTLS/")
+set(CPACK_RPM_PACKAGE_URL "https://zelang-dev.github.io/opentls/")
 set(CPACK_RPM_PACKAGE_ARCHITECTURE "noarch")
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/opentlsConfig.cmake
