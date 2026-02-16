@@ -40,6 +40,14 @@ ssize_t pwrite(int d, const void *buf, size_t nbytes, off_t offset);
 
 #define access _access
 
+#ifndef random
+#	define random rand
+#endif
+
+#ifndef O_NONBLOCK
+#	define O_NONBLOCK      0x100000
+#endif
+
 #ifdef _MSC_VER
 #include <windows.h>
 static inline unsigned int sleep(unsigned int seconds)
@@ -50,8 +58,8 @@ static inline unsigned int sleep(unsigned int seconds)
 #endif
 
 int ftruncate(int fd, off_t length);
-ssize_t pread(int d, void *buf, size_t nbytes, off_t offset);
-ssize_t pwrite(int d, const void *buf, size_t nbytes, off_t offset);
+__int64 pread(int d, void *buf, size_t nbytes, off_t offset);
+__int64 pwrite(int d, const void *buf, size_t nbytes, off_t offset);
 
 #endif
 
