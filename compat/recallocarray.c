@@ -21,6 +21,8 @@
 #include <string.h>
 #include <unistd.h>
 
+extern int getpagesize(void);
+
 /*
  * This is sqrt(SIZE_MAX+1), as s1*s2 <= SIZE_MAX
  * if both s1 < MUL_NO_OVERFLOW and s2 < MUL_NO_OVERFLOW
@@ -49,7 +51,7 @@ recallocarray(void *ptr, size_t oldnmemb, size_t newnmemb, size_t size)
 		return NULL;
 	}
 	oldsize = oldnmemb * size;
-	
+
 	/*
 	 * Don't bother too much if we're shrinking just a bit,
 	 * we do not shrink for series of small steps, oh well.
