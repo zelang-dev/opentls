@@ -78,10 +78,6 @@ int getentropy(void *buf, size_t buflen);
 #include "getopt.h"
 #endif
 
-#ifndef HAVE_GETPAGESIZE
-int getpagesize(void);
-#endif
-
 #define pledge(request, paths) 0
 #define unveil(path, permissions) 0
 

@@ -5,7 +5,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 project(opentls
-	VERSION 4.1.14
+	VERSION 4.1.15
 	DESCRIPTION "A new TLS library, designed to make it easier to write foolproof applications."
     LANGUAGES C
 )
