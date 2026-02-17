@@ -821,7 +821,7 @@ tls_configure_ssl_verify(struct tls *ctx, SSL_CTX *ssl_ctx, int verify)
 }
 
 void
-tls_free(struct tls *ctx)
+tls_free_ex(struct tls *ctx)
 {
 	if (ctx == NULL)
 		return;

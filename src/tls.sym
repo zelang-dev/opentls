@@ -63,7 +63,8 @@ tls_connect_servername
 tls_connect_socket
 tls_default_ca_cert_file
 tls_error
-tls_free
+tls_free_ex
+tls_flush
 tls_handshake
 tls_init
 tls_load_file

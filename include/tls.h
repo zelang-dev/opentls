@@ -90,6 +90,8 @@ typedef SSIZE_T ssize_t;
 #define TLS_ERROR_INVALID_CONTEXT		0x2000
 #define TLS_ERROR_INVALID_ARGUMENT		0x2001
 
+#define tls_free		tls_free_ex
+
 struct tls;
 struct tls_config;
 
@@ -182,7 +184,7 @@ struct tls *tls_client(void);
 struct tls *tls_server(void);
 int tls_configure(struct tls *_ctx, struct tls_config *_config);
 void tls_reset(struct tls *_ctx);
-void tls_free(struct tls *_ctx);
+void tls_free_ex(struct tls *_ctx);
 
 int tls_accept_fds(struct tls *_ctx, struct tls **_cctx, int _fd_read,
     int _fd_write);
