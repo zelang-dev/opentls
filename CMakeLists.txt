@@ -53,7 +53,7 @@ endif()
 message("Generated with config types: ${CMAKE_CONFIGURATION_TYPES}")
 
 set(CMAKE_CONFIGURATION_TYPES=Debug;Release)
-find_package(OpenSSL 1.1.0...<4.0.0 REQUIRED)
+find_package(OpenSSL REQUIRED)
 if(WIN32)
 	include_directories(${OPENSSL_INCLUDE_DIR})
 endif()

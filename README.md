@@ -64,7 +64,7 @@ Add to **CMakeLists.txt**
 find_package(opentls QUIET)
 if(NOT opentls_FOUND)
     FetchContent_Declare(opentls
-        URL https://github.com/zelang-dev/opentls/archive/refs/tags/4.1.17.zip
+        URL https://github.com/zelang-dev/opentls/archive/refs/tags/4.1.18.zip
         URL_MD5 ddb0aba138f2438e3d8a012ab9c68d82
     )
     FetchContent_MakeAvailable(opentls)
