@@ -5,7 +5,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 project(opentls
-	VERSION 4.1.18
+	VERSION 4.1.19
 	DESCRIPTION "A new TLS library, designed to make it easier to write foolproof applications."
     LANGUAGES C
 )
@@ -573,11 +573,11 @@ target_include_directories(${PROJECT_NAME}
  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include/compat)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${PLATFORM_LIBS})
-target_link_libraries(${PROJECT_NAME} PUBLIC OpenSSL::SSL)
-target_link_libraries(${PROJECT_NAME} PUBLIC OpenSSL::Crypto)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENSSL_SSL_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENSSL_CRYPTO_LIBRARY})
 
 target_include_directories(${PROJECT_NAME}
-    PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 export_symbol(${PROJECT_NAME} ${CMAKE_CURRENT_BINARY_DIR}/tls.sym)
