@@ -93,7 +93,7 @@ tls_get_peer_cert_issuer(struct tls *ctx,  char **issuer)
 	*issuer = NULL;
 	if (ctx->ssl_peer_cert == NULL)
 		return (-1);
-	if ((name = X509_get_issuer_name(ctx->ssl_peer_cert)) == NULL)
+	if ((name = (X509_NAME *)X509_get_issuer_name(ctx->ssl_peer_cert)) == NULL)
 		return (-1);
 	*issuer = X509_NAME_oneline(name, 0, 0);
 	if (*issuer == NULL)
@@ -109,7 +109,7 @@ tls_get_peer_cert_subject(struct tls *ctx, char **subject)
 	*subject = NULL;
 	if (ctx->ssl_peer_cert == NULL)
 		return (-1);
-	if ((name = X509_get_subject_name(ctx->ssl_peer_cert)) == NULL)
+	if ((name = (X509_NAME *)X509_get_subject_name(ctx->ssl_peer_cert)) == NULL)
 		return (-1);
 	*subject = X509_NAME_oneline(name, 0, 0);
 	if (*subject == NULL)

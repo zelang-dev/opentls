@@ -136,7 +136,7 @@ tls_ocsp_get_certid(X509 *main_cert, STACK_OF(X509) *extra_certs,
 	OCSP_CERTID *cid = NULL;
 	X509_STORE *store;
 
-	if ((issuer_name = X509_get_issuer_name(main_cert)) == NULL)
+	if ((issuer_name = (X509_NAME *)X509_get_issuer_name(main_cert)) == NULL)
 		goto out;
 
 	if (extra_certs != NULL) {
@@ -323,7 +323,7 @@ tls_ocsp_verify_cb(SSL *ssl, void *arg)
 	if ((ctx = SSL_get_app_data(ssl)) == NULL)
 		return -1;
 
-	size = SSL_get_tlsext_status_ocsp_resp(ssl, &raw);
+	size = SSL_get_tlsext_status_ocsp_resp(ssl, (unsigned char *)&raw);
 	if (size <= 0) {
 		if (ctx->config->ocsp_require_stapling) {
 			tls_set_errorx(ctx, TLS_ERROR_UNKNOWN,

@@ -224,7 +224,7 @@ tls_check_common_name(struct tls *ctx, X509 *cert, const char *name,
 
 	*cn_match = 0;
 
-	subject_name = X509_get_subject_name(cert);
+	subject_name = (X509_NAME *)X509_get_subject_name(cert);
 	if (subject_name == NULL)
 		goto done;
 
@@ -251,7 +251,7 @@ tls_check_common_name(struct tls *ctx, X509 *cert, const char *name,
 		goto err;
 	}
 
-	data = X509_NAME_ENTRY_get_data(X509_NAME_get_entry(subject_name,
+	data = (ASN1_STRING *)X509_NAME_ENTRY_get_data(X509_NAME_get_entry(subject_name,
 	    lastpos));
 	/*
 	 * Fail if we cannot encode the CN bytes as UTF-8.

@@ -587,8 +587,8 @@ execute_process(
     OUTPUT_VARIABLE openssl_dir_log
 	OUTPUT_STRIP_TRAILING_WHITESPACE
 )
-string(REPLACE "OPENSSLDIR: " "" openssl_dir ${openssl_dir_log})
-string(REPLACE "\"" "" openssl_dir_log ${openssl_dir})
+string(REPLACE "OPENSSLDIR: " "" openssl_dir "${openssl_dir_log}")
+string(REPLACE "\"" "" openssl_dir_log "${openssl_dir}")
 message("OPENSSLDIR=${openssl_dir_log}")
 
 set(OPENSSLDIR ${openssl_dir_log} CACHE PATH "Set the default openssl directory" FORCE)
